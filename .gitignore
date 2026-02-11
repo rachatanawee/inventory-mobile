@@ -52,7 +52,7 @@ inventory-mobile/ios/build/
 inventory-mobile/ios/*.xcworkspace/xcuserdata/
 
 # Android
-*.apk
+# *.apk
 *.aab
 *.ap_
 *.dex
