@@ -47,12 +47,17 @@ export class WebViewMessageHandler {
    */
   private handleMessage = (event: MessageEvent): void => {
     try {
+      // Skip empty or invalid messages
+      if (!event.data || typeof event.data !== 'object') {
+        return;
+      }
+
       // Parse message
       const message: WebViewMessage = event.data;
 
       // Validate message format (Requirement 12.4)
       if (!this.validateMessage(message)) {
-        console.error('Invalid message format:', message);
+        console.warn('Invalid message format:', message);
         return;
       }
 
