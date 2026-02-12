@@ -23,6 +23,8 @@ export default function AppNavigator() {
             backgroundColor: '#ffffff',
             borderTopColor: '#e0e0e0',
             borderTopWidth: 1,
+            paddingBottom: 8,
+            height: 60,
           },
           headerShown: false, // ซ่อน header
         }}
