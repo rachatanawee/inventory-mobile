@@ -1,12 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function WebViewTestPage() {
   const [isInWebView, setIsInWebView] = useState(false);
   const [testResults, setTestResults] = useState<string[]>([]);
+  const [productId, setProductId] = useState('');
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
     // Check if running in WebView
     const inWebView = typeof window !== 'undefined' && !!(window as any).ReactNativeWebView;
     setIsInWebView(inWebView);
@@ -14,7 +19,8 @@ export default function WebViewTestPage() {
   }, []);
 
   const addResult = (message: string) => {
-    setTestResults(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    const timestamp = new Date().toLocaleTimeString();
+    setTestResults(prev => [...prev, `${timestamp}: ${message}`]);
   };
 
   const testPostMessage = () => {
@@ -63,9 +69,29 @@ export default function WebViewTestPage() {
     }
   };
 
+  const searchProduct = () => {
+    if (!productId.trim()) {
+      addResult('Please enter a product ID ❌');
+      return;
+    }
+    
+    addResult(`Searching for product ID: ${productId} 🔍`);
+    // Use window.location for faster navigation
+    window.location.href = `/?search=${encodeURIComponent(productId)}`;
+  };
+
   const clearResults = () => {
     setTestResults([]);
   };
+
+  // Don't render until mounted to avoid hydration mismatch
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -82,9 +108,29 @@ export default function WebViewTestPage() {
                 <span className="text-red-600 font-semibold">Running in Browser ❌</span>
               )}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 break-all">
               User Agent: {typeof window !== 'undefined' ? window.navigator.userAgent : 'N/A'}
             </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <h2 className="text-xl font-semibold mb-4">Product Search</h2>
+          <div className="space-y-3">
+            <input
+              type="text"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              placeholder="Enter Product ID..."
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              onKeyPress={(e) => e.key === 'Enter' && searchProduct()}
+            />
+            <button
+              onClick={searchProduct}
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition"
+            >
+              Search Product by ID
+            </button>
           </div>
         </div>
 

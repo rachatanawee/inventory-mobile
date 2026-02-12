@@ -1,22 +1,20 @@
 /**
  * WebView Test Panel
  * Component for testing WebView message communication in browser
- * Only visible in development mode
+ * Visible in all environments
  */
 
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { webViewMessageHandler } from '@/lib/services/WebViewMessageHandler';
 
 export default function WebViewTestPanel() {
   const [lastMessage, setLastMessage] = useState<string>('');
   const [isVisible, setIsVisible] = useState(false);
-
-  // Only show in development
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
+  const [productId, setProductId] = useState('');
+  const router = useRouter();
 
   // Simulate RFID scan result from React Native
   const simulateRFIDResult = () => {
@@ -89,6 +87,18 @@ export default function WebViewTestPanel() {
     setLastMessage('Sent: STOP_SCAN');
   };
 
+  // Search product by ID
+  const searchProduct = () => {
+    if (!productId.trim()) {
+      setLastMessage('Error: Please enter a product ID');
+      return;
+    }
+    
+    setLastMessage(`Searching for product ID: ${productId}`);
+    // Use window.location for faster navigation
+    window.location.href = `/?search=${encodeURIComponent(productId)}`;
+  };
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {/* Toggle Button */}
@@ -101,7 +111,7 @@ export default function WebViewTestPanel() {
 
       {/* Test Panel */}
       {isVisible && (
-        <div className="bg-white rounded-lg shadow-2xl p-4 w-80 border-2 border-[#3282B8]">
+        <div className="bg-white rounded-lg shadow-2xl p-4 w-80 border-2 border-[#3282B8] max-h-[80vh] overflow-y-auto">
           <h3 className="text-lg font-bold mb-3 text-[#1B262C]">
             WebView Message Test
           </h3>
@@ -113,8 +123,29 @@ export default function WebViewTestPanel() {
             </div>
           )}
 
+          {/* Product Search */}
+          <div className="mb-4 pb-4 border-b border-gray-200">
+            <p className="text-xs font-semibold text-[#0F4C75] mb-2">
+              🔍 ค้นหาสินค้า:
+            </p>
+            <input
+              type="text"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
+              placeholder="Product ID..."
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded text-sm mb-2 focus:outline-none focus:border-[#3282B8]"
+              onKeyPress={(e) => e.key === 'Enter' && searchProduct()}
+            />
+            <button
+              onClick={searchProduct}
+              className="w-full px-3 py-2 bg-purple-500 text-white rounded text-sm hover:bg-purple-600 font-medium"
+            >
+              🔎 ค้นหา Product
+            </button>
+          </div>
+
           {/* Simulate Messages FROM React Native */}
-          <div className="mb-4">
+          <div className="mb-4 pb-4 border-b border-gray-200">
             <p className="text-xs font-semibold text-[#0F4C75] mb-2">
               ← จำลองข้อความจาก React Native:
             </p>

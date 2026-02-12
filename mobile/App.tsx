@@ -70,7 +70,11 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="#ffffff" 
+        translucent={false}
+      />
       <View style={styles.container}>
         {/* WebView loads in background */}
         <InventoryWebView

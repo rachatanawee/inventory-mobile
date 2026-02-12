@@ -41,6 +41,30 @@ export default function InventoryClient({ initialProducts }: InventoryClientProp
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pullStartY, setPullStartY] = useState(0);
   const [pullDistance, setPullDistance] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Check for search query parameter on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const search = params.get('search');
+      if (search) {
+        setSearchQuery(search);
+        // Clear the URL parameter
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    }
+  }, []);
+
+  // Filter products based on search query
+  const filteredProducts = products.filter((product) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.rfidTag?.toLowerCase().includes(query) ||
+      product.id.toLowerCase().includes(query)
+    );
+  });
 
   // Update ref when products change
   useEffect(() => {
@@ -414,6 +438,47 @@ export default function InventoryClient({ initialProducts }: InventoryClientProp
           </div>
         )}
 
+        {/* Search Bar */}
+        <div className="mb-6">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ค้นหาสินค้า (ชื่อ, RFID, ID)..."
+              className="w-full px-4 py-3 pl-12 bg-white border-2 border-[#BBE1FA] rounded-lg focus:outline-none focus:border-[#3282B8] transition-colors"
+            />
+            <svg
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#0F4C75]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#0F4C75] hover:text-[#1B262C]"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          {searchQuery && (
+            <p className="mt-2 text-sm text-[#0F4C75]">
+              พบ {filteredProducts.length} รายการจาก {products.length} รายการทั้งหมด
+            </p>
+          )}
+        </div>
+
         {/* RFID Scanner Component */}
         <div className="mb-6">
           <RFIDScanner
@@ -440,7 +505,7 @@ export default function InventoryClient({ initialProducts }: InventoryClientProp
 
         {/* Product List */}
         <ProductList
-          products={products}
+          products={filteredProducts}
           onEdit={handleEdit}
           onDelete={deleteProduct}
           onIncrease={increaseQuantity}

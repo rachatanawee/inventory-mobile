@@ -13,8 +13,8 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ onMenuToggle, isMenuOpen }: NavigationBarProps) {
   return (
-    <nav className="fixed top-0 left-0 right-0 h-14 bg-[#3282B8] z-40 shadow-md">
-      <div className="h-full flex items-center px-3">
+    <nav className="fixed top-0 left-0 right-0 bg-[#3282B8] z-40 shadow-md" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+      <div className="h-14 flex items-center px-3">
         {/* Hamburger Icon Button */}
         <button
           onClick={onMenuToggle}
