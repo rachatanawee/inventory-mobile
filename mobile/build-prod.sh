@@ -18,7 +18,7 @@ cd ..
 mv .env.backup .env
 
 # Copy APK to web public folder
-cp android/app/build/outputs/apk/release/app-release.apk ../inventory-web/public/apk/inventory-system.apk
+cp android/app/build/outputs/apk/release/app-release.apk ../web/public/apk/inventory-system.apk
 
 echo "✓ Production APK built and copied to inventory-web/public/apk/"
-ls -lh ../inventory-web/public/apk/inventory-system.apk
+ls -lh ../web/public/apk/inventory-system.apk
