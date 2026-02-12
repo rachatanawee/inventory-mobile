@@ -7,6 +7,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import WebViewTestScreen from '../screens/WebViewTestScreen';
 
@@ -14,21 +15,20 @@ const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: '#3282B8',
-          tabBarInactiveTintColor: '#6b7280',
-          tabBarStyle: {
-            backgroundColor: '#ffffff',
-            borderTopColor: '#e0e0e0',
-            borderTopWidth: 1,
-            paddingBottom: 8,
-            height: 60,
-          },
-          headerShown: false, // ซ่อน header
-        }}
-      >
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: '#3282B8',
+            tabBarInactiveTintColor: '#6b7280',
+            tabBarStyle: {
+              backgroundColor: '#ffffff',
+              borderTopColor: '#e0e0e0',
+              borderTopWidth: 1,
+            },
+            headerShown: false,
+          }}
+        >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
@@ -51,6 +51,7 @@ export default function AppNavigator() {
         />
       </Tab.Navigator>
     </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
