@@ -445,7 +445,8 @@ export default function InventoryClient({ initialProducts }: InventoryClientProp
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="ค้นหาสินค้า (ชื่อ, RFID, ID)..."
-              className="w-full px-4 py-3 pl-12 bg-white border-2 border-[#BBE1FA] rounded-lg focus:outline-none focus:border-[#3282B8] transition-colors"
+              className="w-full px-4 py-3 pl-12 bg-white border-2 border-[#BBE1FA] rounded-lg focus:outline-none focus:border-[#3282B8] transition-colors text-[#1B262C] text-base placeholder:text-gray-400"
+              style={{ WebkitTextFillColor: '#1B262C', opacity: 1 }}
             />
             <svg
               className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#0F4C75]"

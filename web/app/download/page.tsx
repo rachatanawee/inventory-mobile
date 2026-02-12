@@ -4,15 +4,39 @@
  */
 
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export const metadata: Metadata = {
   title: 'ดาวน์โหลดแอป - Inventory System',
   description: 'ดาวน์โหลดแอปพลิเคชัน Inventory System สำหรับ Android',
 };
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
-export default function DownloadPage() {
+interface BuildInfo {
+  version: string;
+  versionCode: number;
+  buildDate: string;
+  buildTimestamp: number;
+  fileSize: string;
+}
+
+async function getBuildInfo(): Promise<BuildInfo | null> {
+  try {
+    const filePath = path.join(process.cwd(), 'public', 'apk', 'build-info.json');
+    const fileContents = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(fileContents);
+  } catch (error) {
+    console.error('Failed to read build info:', error);
+    return null;
+  }
+}
+
+export default async function DownloadPage() {
+  const buildInfo = await getBuildInfo();
+
   return (
     <div className="min-h-screen bg-[#BBE1FA]">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -40,10 +64,15 @@ export default function DownloadPage() {
                 Inventory System
               </h2>
               <p className="text-[#0F4C75] mb-1">
-                เวอร์ชัน 0.1.0
+                เวอร์ชัน {buildInfo?.version || '1.0.0'}
               </p>
+              {buildInfo?.buildDate && (
+                <p className="text-sm text-gray-600 mb-1">
+                  Build: {buildInfo.buildDate}
+                </p>
+              )}
               <p className="text-sm text-gray-600">
-                ขนาดไฟล์: ~50 MB
+                ขนาดไฟล์: {buildInfo?.fileSize || '~50 MB'}
               </p>
             </div>
 
@@ -72,7 +101,7 @@ export default function DownloadPage() {
             <p className="text-sm text-gray-500 text-center max-w-md">
               สำหรับอุปกรณ์ Android เท่านั้น
               <br />
-              ต้องเปิดใช้งาน "ติดตั้งจากแหล่งที่ไม่รู้จัก" ในการตั้งค่า
+              ต้องเปิดใช้งาน &quot;ติดตั้งจากแหล่งที่ไม่รู้จัก&quot; ในการตั้งค่า
             </p>
           </div>
         </div>
@@ -100,14 +129,14 @@ export default function DownloadPage() {
                 3
               </span>
               <span>
-                หากระบบขอสิทธิ์ "ติดตั้งจากแหล่งที่ไม่รู้จัก" ให้อนุญาต
+                หากระบบขอสิทธิ์ &quot;ติดตั้งจากแหล่งที่ไม่รู้จัก&quot; ให้อนุญาต
               </span>
             </li>
             <li className="flex items-start gap-3">
               <span className="flex-shrink-0 w-6 h-6 bg-[#3282B8] text-white rounded-full flex items-center justify-center text-sm font-medium">
                 4
               </span>
-              <span>กดปุ่ม "ติดตั้ง" และรอจนเสร็จสิ้น</span>
+              <span>กดปุ่ม &quot;ติดตั้ง&quot; และรอจนเสร็จสิ้น</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="flex-shrink-0 w-6 h-6 bg-[#3282B8] text-white rounded-full flex items-center justify-center text-sm font-medium">
@@ -145,13 +174,13 @@ export default function DownloadPage() {
 
         {/* Back Link */}
         <div className="flex justify-center">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 text-[#0F4C75] hover:text-[#3282B8] font-medium transition-colors"
           >
             <span>←</span>
             <span>กลับไปหน้าหลัก</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
