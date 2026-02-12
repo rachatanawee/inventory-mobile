@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import WebView, { WebViewMessageEvent } from 'react-native-webview';
 import { webViewBridge } from '../services/WebViewBridgeService';
@@ -11,16 +11,19 @@ interface InventoryWebViewProps {
   onError?: (error: any) => void;
 }
 
-export const InventoryWebView: React.FC<InventoryWebViewProps> = ({
+export const InventoryWebView = forwardRef<WebView, InventoryWebViewProps>(({
   url,
   onMessage,
   onLoadStart,
   onLoadEnd,
   onError,
-}) => {
+}, ref) => {
   const webViewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Expose WebView ref to parent
+  useImperativeHandle(ref, () => webViewRef.current as WebView);
 
   // Initialize WebViewBridge with ref
   useEffect(() => {
@@ -89,7 +92,7 @@ export const InventoryWebView: React.FC<InventoryWebViewProps> = ({
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

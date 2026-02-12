@@ -19,7 +19,6 @@ import {
   handleRFIDScanAction,
 } from '@/lib/actions/products';
 import { webViewMessageHandler } from '@/lib/services/WebViewMessageHandler';
-import WebViewTestPanel from './WebViewTestPanel';
 import RFIDScanner from './RFIDScanner';
 
 interface InventoryClientProps {
@@ -511,9 +510,6 @@ export default function InventoryClient({ initialProducts }: InventoryClientProp
           onIncrease={increaseQuantity}
           onDecrease={decreaseQuantity}
         />
-
-        {/* WebView Test Panel - Only in development */}
-        <WebViewTestPanel />
       </div>
     </div>
   );
