@@ -19,6 +19,12 @@ export const navigationItems: NavigationItem[] = [
     icon: '🏠'
   },
   {
+    id: 'webview-test',
+    label: 'WebView Test',
+    href: '/webview-test',
+    icon: '🧪'
+  },
+  {
     id: 'download',
     label: 'ดาวน์โหลดแอป',
     href: '/download',
